@@ -12,18 +12,47 @@ import AppKit
 struct PostureCheckerApp: App {
     @State private var isRunning: Bool = false
     @State private var selectedInterval: Int = 15
+    @State private var timer: Timer?
+    
+    func startTimer() {
+        isRunning = true
+        timer?.invalidate()
+        timer = nil
+        var testInterval = 0.0
+        if selectedInterval == 15{
+            testInterval = 3.0
+        }
+        if selectedInterval == 20{
+            testInterval = 5.0
+        }
+        timer = Timer.scheduledTimer(withTimeInterval: testInterval, repeats: true) { _ in
+            print("Timer fired with: \(testInterval)")
+        }
+    }
+    
+    func stopTimer(){
+        isRunning = false
+        timer?.invalidate()
+        timer = nil
+        print("Timer stopped")
+    }
     var body: some Scene {
         MenuBarExtra("PostureChecker", systemImage: "figure.walk") {
             Text(isRunning ? "Status: Running" : "Status: Stopped")
             Divider()
             Button("Start"){
-                isRunning = true
+                startTimer()
             }
             Button("Stop"){
-                isRunning = false
+                stopTimer()
             }
             Divider()
-            Button(action: {selectedInterval = 15}){
+            Button(action: {
+                selectedInterval = 15
+                if isRunning {
+                    startTimer()
+                }
+            }){
                 HStack {
                     Text("15 mins")
                     if selectedInterval == 15 {
@@ -31,7 +60,12 @@ struct PostureCheckerApp: App {
                     }
                 }
             }
-            Button(action: {selectedInterval = 20}){
+            Button(action: {
+                selectedInterval = 20
+                if isRunning {
+                    startTimer()
+                }
+            }){
                 HStack {
                     Text("20 mins")
                     if selectedInterval == 20 {

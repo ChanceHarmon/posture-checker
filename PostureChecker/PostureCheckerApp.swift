@@ -32,6 +32,21 @@ struct PostureCheckerApp: App {
         }
     }
 
+    func sendNotification(){
+        let content = UNMutableNotificationContent()
+        content.title = "Posture Check"
+        content.body = "Check your knee position."
+        content.sound = .default
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+
+    }
     
     func startTimer() {
         isRunning = true
@@ -45,7 +60,7 @@ struct PostureCheckerApp: App {
             testInterval = 5.0
         }
         timer = Timer.scheduledTimer(withTimeInterval: testInterval, repeats: true) { _ in
-            print("Timer fired with: \(testInterval)")
+            sendNotification()
         }
     }
     

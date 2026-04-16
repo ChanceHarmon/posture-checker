@@ -7,12 +7,31 @@
 
 import SwiftUI
 import AppKit
+import UserNotifications
 
 @main
 struct PostureCheckerApp: App {
     @State private var isRunning: Bool = false
     @State private var selectedInterval: Int = 15
     @State private var timer: Timer?
+    
+    init(){
+        requestNotificationPermission()
+    }
+    
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+            if granted {
+                print("Permission granted.")
+            } else {
+                print("Permission denied.")
+            }
+        }
+    }
+
     
     func startTimer() {
         isRunning = true
@@ -36,6 +55,7 @@ struct PostureCheckerApp: App {
         timer = nil
         print("Timer stopped")
     }
+    
     var body: some Scene {
         MenuBarExtra("PostureChecker", systemImage: "figure.walk") {
             Text(isRunning ? "Status: Running" : "Status: Stopped")

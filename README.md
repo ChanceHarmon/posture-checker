@@ -2,7 +2,7 @@
 
 A lightweight macOS menu bar app that reminds you to check your posture at regular intervals.
 
-## Screenshot
+## Screenshots
 
 ### Menu Bar
 

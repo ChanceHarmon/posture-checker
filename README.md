@@ -4,8 +4,16 @@ A lightweight macOS menu bar app that reminds you to check your posture at regul
 
 ## Screenshot
 
+### Menu Bar
+
 ![Menu Screenshot](assets/menu-bar.png)
+
+### Application Icon
+
 ![Application Icon](assets/application-icon.png)
+
+### Notification
+
 ![Notification](assets/notification.png)
 
 ## Features

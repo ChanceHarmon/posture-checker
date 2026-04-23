@@ -8,6 +8,7 @@
 import SwiftUI
 import AppKit
 import UserNotifications
+import ServiceManagement
 
 @main
 struct PostureCheckerApp: App {
@@ -23,6 +24,10 @@ struct PostureCheckerApp: App {
     // Holds a reference to the currently running timer.
     // It is optional because there may be no timer running.
     @State private var timer: Timer?
+    
+    // Stores the user's "Start at Login" preference.
+    // AppStorage persists the value between launches using UserDefaults.
+    @AppStorage("launchAtLogin") private var launchAtLogin: Bool = false
     
     
     // Runs when the app launches.
@@ -102,8 +107,26 @@ struct PostureCheckerApp: App {
     }
     
     
+    // Registers or unregisters the app as a macOS login item.
+    // When enabled, the app launches automatically when the user logs in.
+    // When disabled, the app is removed from the login items list.
+    func updateLaunchAtLogin() {
+        do {
+            if launchAtLogin {
+                try SMAppService.mainApp.register()
+                print("Registered for launch at login")
+            } else {
+                try SMAppService.mainApp.unregister()
+                print("Unregistered from launch at login")
+            }
+        } catch {
+            print("Login item error: \(error.localizedDescription)")
+        }
+    }
+    
+    
     var body: some Scene {
-        MenuBarExtra("PostureChecker", systemImage: "figure.walk") {
+        MenuBarExtra("PostureChecker", systemImage: "figure.cross.training") {
             
             // Start button begins reminders.
             // Disabled while already running.
@@ -139,6 +162,14 @@ struct PostureCheckerApp: App {
             
             Divider()
             
+            // Toggle controls whether the app should launch automatically at login.
+            // The setting is persisted, and changes are applied through ServiceManagement.
+            Toggle("Start at Login", isOn: $launchAtLogin)
+            .onChange(of: launchAtLogin) {
+                    updateLaunchAtLogin()
+            }
+            
+            Divider()
             
             // Quits the app entirely.
             Button("Quit") {
